@@ -1,6 +1,6 @@
-import Login from '../../components/login';
+import Login from '@/components/login';
 
-export const LoginPage = () => {
+export default function LoginPage() {
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -12,5 +12,3 @@ export const LoginPage = () => {
     </section >
   );
 }
-
-export default LoginPage;
