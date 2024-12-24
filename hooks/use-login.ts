@@ -1,11 +1,11 @@
-import { loginModel } from "@/types/user";
+import { Auth } from "@/openapi";
 import Cookies from 'js-cookie';
 
-export const useLogin = async (user: loginModel) => {
-    const {username, password} = user;
+export const useLogin = async (user: Auth) => {
+    const {email, password} = user;
 
-    if (!username || !password) {
-        return ({error: 'Please enter both username and password.'});
+    if (!email || !password) {
+        return ({error: 'Please enter both email and password.'});
     }
 
     try {
@@ -14,7 +14,7 @@ export const useLogin = async (user: loginModel) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password }),
+            body: JSON.stringify({ email, password }),
         });
 
         if (response.status === 200) {
@@ -22,7 +22,7 @@ export const useLogin = async (user: loginModel) => {
             const { token } = data;
 
             Cookies.set('token', token);
-            localStorage.setItem('username', username);
+            localStorage.setItem('email', email);
         } else if (response.status === 401) {
             return ({error: 'Invalid username or password. Please try again.'});
         } else {

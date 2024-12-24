@@ -1,7 +1,6 @@
-'use client';
+"use client";
 
 import React, { useState } from 'react';
-import useLogin from '../app/hooks/use-login';
 import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form"
 
@@ -19,32 +18,59 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { formSchema } from '@/schemas/login';
+import { Auth, AuthService, ApiError } from '../openapi';
+import { login } from '@/redux/slices/authSlice';
+import { JwtUserPayload } from '@/types/types';
+import { jwtDecode } from 'jwt-decode';
+import { save } from '@/redux/slices/userSlice';
+import { toast } from 'react-toastify';
+import { useDispatch } from '@/redux/store';
 
 const Login = () => {
-  const [error, setError] = useState('');
+  const { postAuthLogin } = AuthService;
+  const dispatch = useDispatch();
+  const form = useForm<Auth>({
+    resolver: zodResolver(z.object({
+      email: z.string().email(),
+      password: z.string().min(6).max(100),
+    })),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const [error, setError] = useState<ApiError | null>();
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-  })
-
-  async function onSubmit(data: z.infer<typeof formSchema>) {
-    const res = await useLogin(data);
-    if (res?.error) {
-      return setError(res.error);
-    };
-
-    router.push('/dashboard');
+  async function onSubmit(data: Auth) {
+    try {
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { token }: any = await postAuthLogin(data);
+      const decoded: JwtUserPayload = jwtDecode(token);
+      dispatch(login(token));
+      dispatch(
+        save({
+          email: decoded.email,
+          id: decoded.id,
+          username: decoded.username,
+          name: decoded.name,
+        }),
+      );
+      toast.success("Login successful!");
+      router.push('/');
+    } catch (error) {
+      setError(error as ApiError);
+    }
   }
-  
+
   console.log("🚀 ~ file: login.tsx:39 ~ onSubmit ~   router:", Cookies.get('token'));
-  
+
   return (
     <>
       {error && (
         <p className="text-red-500 mb-2" role="alert">
-          {error}
+          {error?.message}
         </p>
       )}
       <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
@@ -57,15 +83,15 @@ const Login = () => {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
                   control={form.control}
-                  name="username"
+                  name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input placeholder="username" {...field} />
+                        <Input placeholder="email" type="email" {...field} />
                       </FormControl>
                       <FormDescription>
-                        Enter Username
+                        Enter Email
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
