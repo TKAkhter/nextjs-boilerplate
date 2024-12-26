@@ -1,9 +1,17 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+.vscode
+.env 
+analyze
+coverage
+.husky
+playwright-report
+package-lock.json
+next-blue-print.code-workspace 
 
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 
 # testing
 /coverage
@@ -25,7 +33,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*
+.env*.local
 
 # vercel
 .vercel
@@ -34,3 +42,41 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Sentry Config File
+.sentryclirc
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+# Sentry Config File
+.env.sentry-build-plugin
+
+# Sentry Config File
+.env.sentry-build-plugin
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+.vercel
+
+*storybook.log
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -1,0 +1,45 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
+}
+
+model Auth {
+  id String @id @default(uuid()) @map("_id")
+  email String @unique
+  password String
+}
+
+model File {
+  id String @id @default(uuid()) @map("_id")
+  uuid String
+  filePath String?
+  tags String
+  fileName String?
+  fileText String?
+  views String?
+  userId String?
+  createdAt String?
+  updatedAt String?
+}
+
+model HealthCheck {
+  id String @id @default(uuid()) @map("_id")
+}
+
+model User {
+  id String @id @default(uuid()) @map("_id")
+  uuid String
+  name String
+  username String
+  email String @unique
+  password String
+  bio String?
+  phoneNumber String?
+  createdAt String
+  updatedAt String
+}
