@@ -1,6 +1,5 @@
 'use client';
 
-import StoreProvider from "@/providers/store.provider";
 import ToastProvider from "@/providers/toast.provider";
 import TooltipProvider from "@/providers/tooltip.provider";
 import Link from 'next/link';
@@ -41,7 +40,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <StoreProvider>
       <ToastProvider>
         <TooltipProvider>
           <main className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -60,7 +58,6 @@ export default function DashboardLayout({
           </main>
         </TooltipProvider>
       </ToastProvider>
-    </StoreProvider>
   );
 }
 

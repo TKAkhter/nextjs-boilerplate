@@ -19,16 +19,15 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Auth, AuthService, ApiError } from '../openapi';
-import { login } from '@/redux/slices/authSlice';
 import { JwtUserPayload } from '@/types/types';
 import { jwtDecode } from 'jwt-decode';
-import { save } from '@/redux/slices/userSlice';
 import { toast } from 'react-toastify';
-import { useDispatch } from '@/redux/store';
+import { useAuth } from '@/store/useAuth';
+import { addDelay } from '@/lib/utils';
 
 const Login = () => {
   const { postAuthLogin } = AuthService;
-  const dispatch = useDispatch();
+  const { setToken, setUser } = useAuth();
   const form = useForm<Auth>({
     resolver: zodResolver(z.object({
       email: z.string().email(),
@@ -48,16 +47,19 @@ const Login = () => {
       //eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { token }: any = await postAuthLogin(data);
       const decoded: JwtUserPayload = jwtDecode(token);
-      dispatch(login(token));
-      dispatch(
-        save({
+      setToken(token);
+      setUser(
+        {
           email: decoded.email,
-          id: decoded.id,
+          uuid: decoded.id,
           username: decoded.username,
           name: decoded.name,
-        }),
+        },
       );
+      // Cookies.set('token', token);
+      // localStorage.setItem('email', decoded.email);
       toast.success("Login successful!");
+      await addDelay(1000);
       router.push('/');
     } catch (error) {
       setError(error as ApiError);
