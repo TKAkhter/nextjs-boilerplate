@@ -63,7 +63,7 @@ const Nav_desktop = () => {
                         // @ts-ignore
                         const Icon = Icons[item.icon || "arrowRight"]
                         return (
-                          <div className="flex justify-center items-center flex-row w-32">
+                          <div className="flex justify-center items-center flex-row w-32" key={item.name}>
                             <Icon className="mr-2 h-8 w-8" />
                             <ListItem key={item.name} title={item.name} href={item.href}>
                               {item.desc}
